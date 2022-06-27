@@ -1,1 +1,3 @@
 # WpfSokoban
+
+![Demo](demo.png)
