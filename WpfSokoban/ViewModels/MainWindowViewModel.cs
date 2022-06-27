@@ -8,8 +8,14 @@ namespace WpfSokoban.ViewModels
 {
     public class MainWindowViewModel : ObservableObject
     {
+        /// <summary>
+        /// The level model
+        /// </summary>
         public Level Level { get; }
 
+        /// <summary>
+        /// Indicates the index of the current level
+        /// </summary>
         public int CurrentLevel { get; private set; } = 1;
 
         public MainWindowViewModel()
@@ -24,11 +30,17 @@ namespace WpfSokoban.ViewModels
             {
                 if (CurrentLevel >= 3)
                     return;
-                Level.LoadLevel(GetLevel(CurrentLevel++));
+                Level.LoadLevel(GetLevel(++CurrentLevel));
             });
             RestartCommand = new RelayCommand(() => Level.LoadLevel(GetLevel(CurrentLevel)));
         }
 
+        /// <summary>
+        /// Convert int to actual level resource
+        /// </summary>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        /// <exception cref="IndexOutOfRangeException"></exception>
         private string GetLevel(int level)
         {
             switch (level)
@@ -44,6 +56,10 @@ namespace WpfSokoban.ViewModels
             }
         }
 
+        /// <summary>
+        /// Handle key press event to control the hero
+        /// </summary>
+        /// <param name="e"></param>
         private void KeyUpHandler(KeyEventArgs e)
         {
             if (Level.IsWinning)
@@ -97,10 +113,19 @@ namespace WpfSokoban.ViewModels
             Level.Hero.Move(offset);
         }
 
+        /// <summary>
+        /// Handle the key press event of the window
+        /// </summary>
         public ICommand KeyUpCommand { get; }
 
+        /// <summary>
+        /// Load the next level
+        /// </summary>
         public ICommand NextLevelCommand { get; }
 
+        /// <summary>
+        /// Restart the current level
+        /// </summary>
         public ICommand RestartCommand { get; }
     }
 }
