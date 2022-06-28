@@ -74,7 +74,12 @@ namespace WpfSokoban.ViewModels
         private void KeyUpHandler(KeyEventArgs e)
         {
             if (Level.IsWinning)
-                return;
+            {
+                if (e.Key == Key.Enter)
+                    NextLevelCommand.Execute(null);
+                else
+                    return;
+            }
 
             var x = Level.Hero.X;
             var y = Level.Hero.Y;

@@ -12,11 +12,18 @@
         Title="Sokoban"
         Width="600"
         Height="450"
-        Background="Azure"
+        Background="{DynamicResource LightBrush}"
         mc:Ignorable="d">
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="KeyUp">
             <i:InvokeCommandAction Command="{Binding KeyUpCommand}" PassEventArgsToCommand="True" />
@@ -55,13 +62,13 @@
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Type}" Value="{x:Static model:BlockType.Wall}">
                                                 <Setter Property="Icon" Value="DiceFour" />
-                                                <Setter Property="Foreground" Value="SlateGray" />
+                                                <Setter Property="Foreground" Value="{StaticResource MiddleBrush}" />
                                                 <Setter Property="Width" Value="50" />
                                                 <Setter Property="Height" Value="50" />
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding Type}" Value="{x:Static model:BlockType.Star}">
                                                 <Setter Property="Icon" Value="DotCircle" />
-                                                <Setter Property="Foreground" Value="Orange" />
+                                                <Setter Property="Foreground" Value="{StaticResource RedBrush}" />
                                                 <Setter Property="Width" Value="40" />
                                                 <Setter Property="Height" Value="40" />
                                                 <Setter Property="Margin" Value="5" />
@@ -91,10 +98,10 @@
                             <fa:IconImage Width="50" Height="50" Icon="Baseball">
                                 <fa:IconImage.Resources>
                                     <Style TargetType="fa:IconImage">
-                                        <Setter Property="Foreground" Value="#333" />
+                                        <Setter Property="Foreground" Value="{StaticResource DarkBrush}" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsOnStar}" Value="True">
-                                                <Setter Property="Foreground" Value="YellowGreen" />
+                                                <Setter Property="Foreground" Value="{StaticResource BlueBrush}" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
@@ -120,7 +127,7 @@
                           Canvas.Top="{Binding Level.Hero.ActualY}"
                           Width="50"
                           Height="50">
-                        <Ellipse Width="45" Height="45" Fill="Yellow" />
+                        <Ellipse Width="45" Height="45" Fill="{StaticResource YellowBrush}" />
                         <fa:IconImage Icon="GrinAlt" Foreground="ForestGreen" />
                     </Grid>
                 </ItemsControl>
@@ -129,29 +136,26 @@
 
         <!-- Right side info panel -->
         <Grid Grid.Column="1" Width="160">
-            <StackPanel Margin="0,10">
+            <StackPanel Margin="0,10" Cursor="Hand">
                 <TextBlock Text="LEVEL" FontSize="20" Foreground="Gray" />
                 <TextBlock FontSize="30" Text="{Binding CurrentLevel}" />
                 <TextBlock Text="STEPS" FontSize="20" Foreground="Gray" />
                 <TextBlock FontSize="30" Text="{Binding Level.StepCount}" />
             </StackPanel>
             <StackPanel Margin="10" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-                <TextBlock Margin="10"
-                           Text="Restart"
-                           FontSize="24"
-                           Cursor="Hand"
-                           Foreground="Gray">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseUp">
-                            <i:InvokeCommandAction Command="{Binding RestartCommand}" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
-                </TextBlock>
+                <Button HorizontalAlignment="Right"
+                        Style="{StaticResource TextButton}"
+                        Content="Next Level"
+                        Command="{Binding NextLevelCommand}" />
+                <Button HorizontalAlignment="Right"
+                        Style="{StaticResource TextButton}"
+                        Content="Restart"
+                        Command="{Binding RestartCommand}" />
             </StackPanel>
         </Grid>
 
         <!-- You Win Popup -->
-        <Grid Grid.ColumnSpan="2" Visibility="{Binding Level.IsWinning, Converter={cv:BoolToVisibilityConverter IsHidden=True}}">
+        <Grid Grid.ColumnSpan="2" d:Visibility="Visible" Visibility="{Binding Level.IsWinning, Converter={cv:BoolToVisibilityConverter IsHidden=True}}">
             <Grid.Resources>
                 <Style TargetType="Grid">
                     <Setter Property="Background" Value="#8F007ACC" />
@@ -180,18 +184,12 @@
                 <Rectangle Width="Auto"
                            Height="5"
                            Margin="0,8"
-                           Fill="White" />
+                           Fill="{StaticResource LightBrush}" />
                 <TextBlock HorizontalAlignment="Right"
-                           Text="Next Level"
-                           Foreground="LightGray"
+                           Foreground="{StaticResource LightBrush}"
                            FontWeight="Bold"
-                           Cursor="Hand"
-                           FontSize="32">
-                    <i:Interaction.Triggers>
-                        <i:EventTrigger EventName="MouseUp">
-                            <i:InvokeCommandAction Command="{Binding NextLevelCommand}" />
-                        </i:EventTrigger>
-                    </i:Interaction.Triggers>
+                           FontSize="24">
+                    Press Enter to Continue
                 </TextBlock>
             </StackPanel>
         </Grid>
