@@ -27,13 +27,21 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
+        
+        <!--Left side game graphic area-->
         <Viewbox Margin="10"
                  HorizontalAlignment="Center"
                  VerticalAlignment="Center"
                  Stretch="Uniform">
+            <Viewbox.Resources>
+                <Style TargetType="ItemsControl">
+                    <Setter Property="Width" Value="{Binding Level.Width}" />
+                    <Setter Property="Height" Value="{Binding Level.Height}" />
+                </Style>
+            </Viewbox.Resources>
             <Grid>
                 <!-- Background Map -->
-                <ItemsControl Width="{Binding Level.Width}" Height="{Binding Level.Height}" ItemsSource="{Binding Level.Map}">
+                <ItemsControl ItemsSource="{Binding Level.Map}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Canvas />
@@ -72,7 +80,7 @@
                     </ItemsControl.ItemContainerStyle>
                 </ItemsControl>
                 <!-- Crates -->
-                <ItemsControl Width="{Binding Level.Width}" Height="{Binding Level.Height}" ItemsSource="{Binding Level.Crates}">
+                <ItemsControl ItemsSource="{Binding Level.Crates}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <Canvas />
@@ -102,7 +110,12 @@
                     </ItemsControl.ItemContainerStyle>
                 </ItemsControl>
                 <!-- Hero -->
-                <Canvas Width="{Binding Level.Width}" Height="{Binding Level.Height}">
+                <ItemsControl>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
                     <Grid Canvas.Left="{Binding Level.Hero.ActualX}"
                           Canvas.Top="{Binding Level.Hero.ActualY}"
                           Width="50"
@@ -110,10 +123,11 @@
                         <Ellipse Width="45" Height="45" Fill="Yellow" />
                         <fa:IconImage Icon="GrinAlt" Foreground="ForestGreen" />
                     </Grid>
-
-                </Canvas>
+                </ItemsControl>
             </Grid>
         </Viewbox>
+        
+        <!--Right side info panel-->
         <Grid Grid.Column="1" Width="160">
             <StackPanel Margin="0,10">
                 <TextBlock Text="LEVEL" FontSize="20" Foreground="Gray" />
@@ -136,6 +150,7 @@
             </TextBlock>
         </Grid>
 
+        <!--You Win Popup-->
         <Grid Grid.ColumnSpan="2" Visibility="{Binding Level.IsWinning, Converter={cv:BoolToVisibilityConverter IsHidden=True}}">
             <Grid.Resources>
                 <Style TargetType="Grid">
