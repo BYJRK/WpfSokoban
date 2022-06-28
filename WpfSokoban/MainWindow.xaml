@@ -145,17 +145,24 @@
             <StackPanel Margin="10" HorizontalAlignment="Right" VerticalAlignment="Bottom">
                 <Button HorizontalAlignment="Right"
                         Style="{StaticResource TextButton}"
-                        Content="Next Level"
-                        Command="{Binding NextLevelCommand}" />
+                        Content="Undo"
+                        IsEnabled="{Binding Level.History.Count}"
+                        Command="{Binding UndoCommand}" />
                 <Button HorizontalAlignment="Right"
                         Style="{StaticResource TextButton}"
                         Content="Restart"
                         Command="{Binding RestartCommand}" />
+                <Button HorizontalAlignment="Right"
+                        Style="{StaticResource TextButton}"
+                        Content="Next Level"
+                        IsEnabled="{Binding HasMoreLevels}"
+                        Command="{Binding NextLevelCommand}" />
             </StackPanel>
         </Grid>
 
         <!-- You Win Popup -->
-        <Grid Grid.ColumnSpan="2" d:Visibility="Visible" Visibility="{Binding Level.IsWinning, Converter={cv:BoolToVisibilityConverter IsHidden=True}}">
+        <Grid Visibility="{Binding Level.IsWinning, Converter={cv:BoolToVisibilityConverter IsHidden=True}}">
+            <Grid.ColumnSpan>2</Grid.ColumnSpan>
             <Grid.Resources>
                 <Style TargetType="Grid">
                     <Setter Property="Background" Value="#8F007ACC" />
@@ -188,6 +195,7 @@
                 <TextBlock HorizontalAlignment="Right"
                            Foreground="{StaticResource LightBrush}"
                            FontWeight="Bold"
+                           Visibility="{Binding HasMoreLevels, Converter={cv:BoolToVisibilityConverter}}"
                            FontSize="24">
                     Press Enter to Continue
                 </TextBlock>
