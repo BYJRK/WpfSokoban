@@ -2,61 +2,33 @@
 using PropertyChanged;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 
 namespace WpfSokoban.Models
 {
     public class Level : ObservableObject
     {
-        /// <summary>
-        /// The grid size inside the level used to draw the controls
-        /// </summary>
         public static int GridSize = 50;
 
-        /// <summary>
-        /// The map of the level (including walls, spaces and goals)
-        /// </summary>
         public ObservableCollection<Block> Map { get; } = new();
 
-        /// <summary>
-        /// The player movable object
-        /// </summary>
         public MovableObject Hero { get; private set; }
 
-        /// <summary>
-        /// All crates on the map
-        /// </summary>
         public ObservableCollection<MovableObject> Crates { get; } = new();
-
-        /// <summary>
-        /// Record the player actions so as to achieve undo function
-        /// </summary>
-        public Stack<(MovableObject obj, (int, int) offset)> History { get; private set; } = new();
 
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        [AlsoNotifyFor(nameof(IsWinning), nameof(History))]
+        [AlsoNotifyFor(nameof(IsWinning))]
         public int StepCount { get; set; } = 0;
 
         public void LoadLevel(string text)
         {
-            Reset();
+            Map.Clear();
+            Crates.Clear();
 
             StepCount = 0;
-
-            (Width, Height) = ParseLevelString(text);
-
-            Width = GridSize * (Width + 1);
-            Height = GridSize * (Height + 1);
-
-            OnPropertyChanged(nameof(IsWinning));
-        }
-
-        private (int width, int height) ParseLevelString(string text)
-        {
-            int width = 0, height = 0;
+            Width = Height = 0;
 
             var lines = text.Split('\n');
             for (int i = 0; i < lines.Length; i++)
@@ -69,10 +41,10 @@ namespace WpfSokoban.Models
                     int x = j, y = i;
 
                     // Get grid size to draw the canvas
-                    if (x > width)
-                        width = x;
-                    if (y > height)
-                        height = y;
+                    if (x > Width)
+                        Width = x;
+                    if (y > Height)
+                        Height = y;
 
                     /**
                      * #: Wall
@@ -97,19 +69,12 @@ namespace WpfSokoban.Models
                 }
             }
 
-            return (width, height);
+            Width = GridSize * (Width + 1);
+            Height = GridSize * (Height + 1);
+
+            OnPropertyChanged(nameof(IsWinning));
         }
 
-        private void Reset()
-        {
-            Map.Clear();
-            Crates.Clear();
-            History.Clear();
-        }
-
-        /// <summary>
-        /// Check if there is a wall at a specific position
-        /// </summary>
         public bool HasWallAt(int x, int y)
         {
             foreach (var block in Map.Where(b => b.Type == BlockType.Wall))
@@ -120,9 +85,6 @@ namespace WpfSokoban.Models
             return false;
         }
 
-        /// <summary>
-        /// Check if all crates are on the goal block
-        /// </summary>
         public bool IsWinning
         {
             get
@@ -136,9 +98,6 @@ namespace WpfSokoban.Models
             }
         }
 
-        /// <summary>
-        /// Check if there is a crate at a specific position
-        /// </summary>
         public MovableObject HasCrateAt(int x, int y)
         {
             foreach (var crate in Crates)
@@ -147,29 +106,6 @@ namespace WpfSokoban.Models
                     return crate;
             }
             return null;
-        }
-
-        /// <summary>
-        /// Undo one step according to the history
-        /// </summary>
-        public void Undo()
-        {
-            Debug.Assert(History.Count > 0);
-
-            // the last step must be hero's
-            (var hero, var offset) = History.Pop();
-            StepCount -= 1;
-            hero.MoveBack(offset);
-
-            // check if the previous step is a movement of a crate
-            if (History.TryPeek(out var move) && move.obj.Type == MovableObjectType.Crate)
-            {
-                History.Pop();
-                move.obj.MoveBack(move.offset);
-                move.obj.CheckOnStar(this);
-            }
-
-            OnPropertyChanged(nameof(History));
         }
     }
 }
