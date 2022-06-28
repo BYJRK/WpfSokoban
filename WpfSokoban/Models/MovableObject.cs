@@ -25,20 +25,21 @@ namespace WpfSokoban.Models
         public int ActualY => Y * Level.GridSize;
         public bool IsOnStar { get; private set; } = false;
 
-        public void Move(int x, int y)
+        private void Move(int x, int y)
         {
             X += x;
             Y += y;
         }
+        /// <summary>
+        /// Move the hero or the crate
+        /// </summary>
         public void Move((int x, int y) offset)
         {
             Move(offset.x, offset.y);
         }
-
-        public void Reverse(int x, int y)
-        {
-            Move(-x, -y);
-        }
+        /// <summary>
+        /// Reverse the movement to achieve undo function
+        /// </summary>
         public void Reverse((int x, int y) offset)
         {
             Move(-offset.x, -offset.y);

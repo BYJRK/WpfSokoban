@@ -9,14 +9,29 @@ namespace WpfSokoban.Models
 {
     public class Level : ObservableObject
     {
+        /// <summary>
+        /// The grid size of the canvas to draw the controls
+        /// </summary>
         public static int GridSize = 50;
 
+        /// <summary>
+        /// The map of the current level (including walls, spaces and goals)
+        /// </summary>
         public ObservableCollection<Block> Map { get; } = new();
 
+        /// <summary>
+        /// The player controllable object
+        /// </summary>
         public MovableObject Hero { get; private set; }
 
+        /// <summary>
+        /// All crates in the current level
+        /// </summary>
         public ObservableCollection<MovableObject> Crates { get; } = new();
 
+        /// <summary>
+        /// A stack to record the player actions so as to undo actions later
+        /// </summary>
         public Stack<(MovableObject obj, (int, int) offset)> History { get; private set; } = new();
 
         public int Width { get; private set; }
@@ -27,12 +42,27 @@ namespace WpfSokoban.Models
 
         public void LoadLevel(string text)
         {
+            Init();
+
+            StepCount = 0;
+            (Width, Height) = ParseLevelString(text);
+
+            Width = GridSize * (Width + 1);
+            Height = GridSize * (Height + 1);
+
+            OnPropertyChanged(nameof(IsWinning));
+        }
+
+        private void Init()
+        {
             Map.Clear();
             Crates.Clear();
             History.Clear();
+        }
 
-            StepCount = 0;
-            Width = Height = 0;
+        private (int width, int height) ParseLevelString(string text)
+        {
+            int width = 0, height = 0;
 
             var lines = text.Split('\n');
             for (int i = 0; i < lines.Length; i++)
@@ -45,10 +75,10 @@ namespace WpfSokoban.Models
                     int x = j, y = i;
 
                     // Get grid size to draw the canvas
-                    if (x > Width)
-                        Width = x;
-                    if (y > Height)
-                        Height = y;
+                    if (x > width)
+                        width = x;
+                    if (y > height)
+                        height = y;
 
                     /**
                      * #: Wall
@@ -73,10 +103,7 @@ namespace WpfSokoban.Models
                 }
             }
 
-            Width = GridSize * (Width + 1);
-            Height = GridSize * (Height + 1);
-
-            OnPropertyChanged(nameof(IsWinning));
+            return (width, height);
         }
 
         public bool HasWallAt(int x, int y)
@@ -130,6 +157,7 @@ namespace WpfSokoban.Models
             {
                 History.Pop();
                 move.obj.Reverse(move.offset);
+                move.obj.CheckOnStar(this);
             }
 
             OnPropertyChanged(nameof(History));
