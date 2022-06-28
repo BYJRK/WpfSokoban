@@ -28,9 +28,16 @@ namespace WpfSokoban.ViewModels
             KeyUpCommand = new RelayCommand<KeyEventArgs>(KeyUpHandler);
             NextLevelCommand = new RelayCommand(() =>
             {
-                if (CurrentLevel >= 3)
-                    return;
-                Level.LoadLevel(GetLevel(++CurrentLevel));
+                try
+                {
+                    string res = GetLevel(CurrentLevel + 1);
+                    Level.LoadLevel(res);
+                    CurrentLevel += 1;
+                }
+                catch (Exception)
+                {
+                    // There is no more levels to play
+                }
             });
             RestartCommand = new RelayCommand(() => Level.LoadLevel(GetLevel(CurrentLevel)));
         }
@@ -51,6 +58,10 @@ namespace WpfSokoban.ViewModels
                     return Resource.Level2;
                 case 3:
                     return Resource.Level3;
+                case 4:
+                    return Resource.Level4;
+                case 5:
+                    return Resource.Level5;
                 default:
                     throw new IndexOutOfRangeException();
             }
@@ -78,6 +89,7 @@ namespace WpfSokoban.ViewModels
                 offset = (-1, 0);
             else if (e.Key == Key.Right)
                 offset = (1, 0);
+            else return;
 
             x += offset.x;
             y += offset.y;

@@ -61,10 +61,10 @@ namespace WpfSokoban {
         }
         
         /// <summary>
-        ///   查找类似 ####
-        ///#@ ##
-        ///# $*#
-        ///##  #
+        ///   查找类似 #####
+        ///#@  #
+        ///# $ #
+        ///## *#
         /// #### 的本地化字符串。
         /// </summary>
         internal static string Level1 {
@@ -101,6 +101,35 @@ namespace WpfSokoban {
         internal static string Level3 {
             get {
                 return ResourceManager.GetString("Level3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似   ####
+        ///###  ####
+        ///#     $ #
+        ///# #  #$ #
+        ///# * *#@ #
+        ///######### 的本地化字符串。
+        /// </summary>
+        internal static string Level4 {
+            get {
+                return ResourceManager.GetString("Level4", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 #######
+        ///#* * *#
+        ///# $$$ #
+        ///#*$@$*#
+        ///# $$$ #
+        ///#* * *#
+        ///####### 的本地化字符串。
+        /// </summary>
+        internal static string Level5 {
+            get {
+                return ResourceManager.GetString("Level5", resourceCulture);
             }
         }
     }

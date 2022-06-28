@@ -27,8 +27,8 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        
-        <!--Left side game graphic area-->
+
+        <!-- Left side game graphic area -->
         <Viewbox Margin="10"
                  HorizontalAlignment="Center"
                  VerticalAlignment="Center"
@@ -126,8 +126,8 @@
                 </ItemsControl>
             </Grid>
         </Viewbox>
-        
-        <!--Right side info panel-->
+
+        <!-- Right side info panel -->
         <Grid Grid.Column="1" Width="160">
             <StackPanel Margin="0,10">
                 <TextBlock Text="LEVEL" FontSize="20" Foreground="Gray" />
@@ -135,22 +135,22 @@
                 <TextBlock Text="STEPS" FontSize="20" Foreground="Gray" />
                 <TextBlock FontSize="30" Text="{Binding Level.StepCount}" />
             </StackPanel>
-            <TextBlock Margin="10"
-                       HorizontalAlignment="Right"
-                       VerticalAlignment="Bottom"
-                       Text="Restart"
-                       FontSize="24"
-                       Cursor="Hand"
-                       Foreground="Gray">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseUp">
-                        <i:InvokeCommandAction Command="{Binding RestartCommand}" />
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
-            </TextBlock>
+            <StackPanel Margin="10" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                <TextBlock Margin="10"
+                           Text="Restart"
+                           FontSize="24"
+                           Cursor="Hand"
+                           Foreground="Gray">
+                    <i:Interaction.Triggers>
+                        <i:EventTrigger EventName="MouseUp">
+                            <i:InvokeCommandAction Command="{Binding RestartCommand}" />
+                        </i:EventTrigger>
+                    </i:Interaction.Triggers>
+                </TextBlock>
+            </StackPanel>
         </Grid>
 
-        <!--You Win Popup-->
+        <!-- You Win Popup -->
         <Grid Grid.ColumnSpan="2" Visibility="{Binding Level.IsWinning, Converter={cv:BoolToVisibilityConverter IsHidden=True}}">
             <Grid.Resources>
                 <Style TargetType="Grid">
