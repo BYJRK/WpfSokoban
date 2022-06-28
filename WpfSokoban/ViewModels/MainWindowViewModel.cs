@@ -3,6 +3,8 @@ using Microsoft.Toolkit.Mvvm.Input;
 using System.Windows.Input;
 using WpfSokoban.Models;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace WpfSokoban.ViewModels
 {
@@ -17,6 +19,11 @@ namespace WpfSokoban.ViewModels
         /// Indicates the index of the current level
         /// </summary>
         public int CurrentLevel { get; private set; } = 1;
+
+        /// <summary>
+        /// A temporary flag to indicate whether there are more levels to play
+        /// </summary>
+        public bool HasMoreLevels => CurrentLevel < 5;
 
         public MainWindowViewModel()
         {
@@ -40,6 +47,7 @@ namespace WpfSokoban.ViewModels
                 }
             });
             RestartCommand = new RelayCommand(() => Level.LoadLevel(GetLevel(CurrentLevel)));
+            UndoCommand = new RelayCommand(Level.Undo);
         }
 
         /// <summary>
@@ -75,7 +83,7 @@ namespace WpfSokoban.ViewModels
         {
             if (Level.IsWinning)
             {
-                if (e.Key == Key.Enter)
+                if (e.Key == Key.Enter && HasMoreLevels)
                     NextLevelCommand.Execute(null);
                 else
                     return;
@@ -122,12 +130,16 @@ namespace WpfSokoban.ViewModels
                 // move the crate
                 hitCrate.Move(offset);
                 hitCrate.CheckOnStar(Level);
+
+                Level.History.Push((hitCrate, offset));
             }
 
             // the movement is legal
-            Level.StepCount++;
 
             Level.Hero.Move(offset);
+            Level.History.Push((Level.Hero, offset));
+
+            Level.StepCount++;
         }
 
         /// <summary>
@@ -144,5 +156,10 @@ namespace WpfSokoban.ViewModels
         /// Restart the current level
         /// </summary>
         public ICommand RestartCommand { get; }
+
+        /// <summary>
+        /// Undo one step
+        /// </summary>
+        public ICommand UndoCommand { get; }
     }
 }
