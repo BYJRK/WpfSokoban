@@ -2,6 +2,7 @@
 using PropertyChanged;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 
 namespace WpfSokoban.Models
@@ -16,16 +17,19 @@ namespace WpfSokoban.Models
 
         public ObservableCollection<MovableObject> Crates { get; } = new();
 
+        public Stack<(MovableObject obj, (int, int) offset)> History { get; private set; } = new();
+
         public int Width { get; private set; }
         public int Height { get; private set; }
 
-        [AlsoNotifyFor(nameof(IsWinning))]
+        [AlsoNotifyFor(nameof(IsWinning), nameof(History))]
         public int StepCount { get; set; } = 0;
 
         public void LoadLevel(string text)
         {
             Map.Clear();
             Crates.Clear();
+            History.Clear();
 
             StepCount = 0;
             Width = Height = 0;
@@ -106,6 +110,29 @@ namespace WpfSokoban.Models
                     return crate;
             }
             return null;
+        }
+
+
+        /// <summary>
+        /// Undo one step according to the history
+        /// </summary>
+        public void Undo()
+        {
+            Debug.Assert(History.Count > 0);
+
+            // the last step must be hero's
+            (var hero, var offset) = History.Pop();
+            StepCount -= 1;
+            hero.Reverse(offset);
+
+            // check if the previous step is a movement of a crate
+            if (History.TryPeek(out var move) && move.obj.Type == MovableObjectType.Crate)
+            {
+                History.Pop();
+                move.obj.Reverse(move.offset);
+            }
+
+            OnPropertyChanged(nameof(History));
         }
     }
 }

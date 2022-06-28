@@ -24,6 +24,7 @@ namespace WpfSokoban.Models
         public int ActualX => X * Level.GridSize;
         public int ActualY => Y * Level.GridSize;
         public bool IsOnStar { get; private set; } = false;
+
         public void Move(int x, int y)
         {
             X += x;
@@ -31,9 +32,18 @@ namespace WpfSokoban.Models
         }
         public void Move((int x, int y) offset)
         {
-            X += offset.x;
-            Y += offset.y;
+            Move(offset.x, offset.y);
         }
+
+        public void Reverse(int x, int y)
+        {
+            Move(-x, -y);
+        }
+        public void Reverse((int x, int y) offset)
+        {
+            Move(-offset.x, -offset.y);
+        }
+
         public void CheckOnStar(Level level)
         {
             foreach (var block in level.Map.Where(b => b.Type == BlockType.Star))
