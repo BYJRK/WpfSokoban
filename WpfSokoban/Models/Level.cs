@@ -1,9 +1,12 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.Messaging;
 using PropertyChanged;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using WpfSokoban.Messages;
 
 namespace WpfSokoban.Models
 {
@@ -13,6 +16,16 @@ namespace WpfSokoban.Models
         /// The grid size of the canvas to draw the controls
         /// </summary>
         public static int GridSize = 50;
+
+        /// <summary>
+        /// Indicates the index of the current level
+        /// </summary>
+        public int CurrentLevel { get; set; } = 1;
+
+        /// <summary>
+        /// A temporary flag to indicate whether there are more levels to play
+        /// </summary>
+        public bool HasMoreLevels => CurrentLevel < 5;
 
         /// <summary>
         /// The map of the current level (including walls, spaces and goals)
@@ -38,6 +51,7 @@ namespace WpfSokoban.Models
         public int Height { get; private set; }
 
         [AlsoNotifyFor(nameof(IsWinning), nameof(History))]
+        [OnChangedMethod(nameof(SendNotifyUndoAvailabilityMessage))]
         public int StepCount { get; set; } = 0;
 
         public void LoadLevel(string text)
@@ -51,6 +65,34 @@ namespace WpfSokoban.Models
             Height = GridSize * (Height + 1);
 
             OnPropertyChanged(nameof(IsWinning));
+
+            SendNotifyUndoAvailabilityMessage();
+        }
+
+        public void LoadLevel(int? level = null)
+        {
+            if (level == null)
+                level = CurrentLevel;
+            LoadLevel(GetLevel(level.Value));
+        }
+
+        /// <summary>
+        /// Try to load the next level (if there is one)
+        /// </summary>
+        /// <returns></returns>
+        public bool TryLoadNextLevel()
+        {
+            try
+            {
+                var str = GetLevel(CurrentLevel + 1);
+                LoadLevel(str);
+                CurrentLevel++;
+                return true;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                return false;
+            }
         }
 
         private void Init()
@@ -58,6 +100,44 @@ namespace WpfSokoban.Models
             Map.Clear();
             Crates.Clear();
             History.Clear();
+        }
+
+        private void SendNotifyUndoAvailabilityMessage()
+        {
+            WeakReferenceMessenger.Default.Send(new NotifyUndoAvailabilityMessage(null));
+        }
+
+        /// <summary>
+        /// Convert int to actual level resource
+        /// </summary>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        /// <exception cref="IndexOutOfRangeException"></exception>
+        public string GetLevel(int level)
+        {
+            switch (level)
+            {
+                case 1:
+                    return Resource.Level1;
+                case 2:
+                    return Resource.Level2;
+                case 3:
+                    return Resource.Level3;
+                case 4:
+                    return Resource.Level4;
+                case 5:
+                    return Resource.Level5;
+                default:
+                    throw new IndexOutOfRangeException();
+            }
+        }
+
+        /// <summary>
+        /// Restart the current level by reloading the map
+        /// </summary>
+        public void RestartLevel()
+        {
+            LoadLevel();
         }
 
         private (int width, int height) ParseLevelString(string text)

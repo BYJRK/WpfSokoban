@@ -146,7 +146,6 @@
                 <Button HorizontalAlignment="Right"
                         Style="{StaticResource TextButton}"
                         Content="Undo"
-                        IsEnabled="{Binding Level.History.Count}"
                         Command="{Binding UndoCommand}" />
                 <Button HorizontalAlignment="Right"
                         Style="{StaticResource TextButton}"
@@ -155,7 +154,6 @@
                 <Button HorizontalAlignment="Right"
                         Style="{StaticResource TextButton}"
                         Content="Next Level"
-                        IsEnabled="{Binding HasMoreLevels}"
                         Command="{Binding NextLevelCommand}" />
             </StackPanel>
         </Grid>
