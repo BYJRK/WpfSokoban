@@ -1,5 +1,4 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
-using PropertyChanged;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System.Linq;
 
 namespace WpfSokoban.Models
@@ -7,7 +6,7 @@ namespace WpfSokoban.Models
     /// <summary>
     /// A movable object which can be the hero or a crate
     /// </summary>
-    public class MovableObject : ObservableObject, IPosition
+    public partial class MovableObject : ObservableObject
     {
         public MovableObject(MovableObjectType type, int x, int y)
         {
@@ -16,20 +15,30 @@ namespace WpfSokoban.Models
             Y = y;
         }
 
-        public MovableObjectType Type { get; }
-        [AlsoNotifyFor(nameof(ActualX))]
-        public int X { get; set; }
-        [AlsoNotifyFor(nameof(ActualY))]
-        public int Y { get; set; }
+        [ObservableProperty]
+        private MovableObjectType type;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ActualX))]
+        private int x;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ActualY))]
+        public int y;
+
         public int ActualX => X * Level.GridSize;
+
         public int ActualY => Y * Level.GridSize;
-        public bool IsOnStar { get; private set; } = false;
+
+        [ObservableProperty]
+        private bool isOnStar = false;
 
         private void Move(int x, int y)
         {
             X += x;
             Y += y;
         }
+
         /// <summary>
         /// Move the hero or the crate
         /// </summary>
@@ -37,6 +46,7 @@ namespace WpfSokoban.Models
         {
             Move(offset.x, offset.y);
         }
+
         /// <summary>
         /// Reverse the movement to achieve undo function
         /// </summary>
@@ -47,6 +57,10 @@ namespace WpfSokoban.Models
 
         public void CheckOnStar(Level level)
         {
+            // No need for hero to check if it's on the star
+            if (Type == MovableObjectType.Hero)
+                return;
+
             foreach (var block in level.Map.Where(b => b.Type == BlockType.Star))
             {
                 if (block.X == X && block.Y == Y)

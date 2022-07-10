@@ -1,40 +1,25 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
-using Microsoft.Toolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using System.Windows.Input;
 using WpfSokoban.Messages;
 using WpfSokoban.Models;
 
 namespace WpfSokoban.ViewModels
 {
-    public class MainWindowViewModel : ObservableObject
+    public partial class MainWindowViewModel : ObservableObject
     {
         /// <summary>
         /// The level model
         /// </summary>
-        public Level Level { get; }
-
+        [ObservableProperty]
+        private Level level = new();
 
         public MainWindowViewModel()
         {
-            Level = new Level();
             Level.LoadLevel();
 
             var properties = typeof(Resource).GetProperties();
-
-            KeyUpCommand = new RelayCommand<KeyEventArgs>(KeyUpHandler);
-            NextLevelCommand = new RelayCommand(() =>
-            {
-                Level.TryLoadNextLevel();
-                NextLevelCommand.NotifyCanExecuteChanged();
-
-            }, () => Level.HasMoreLevels);
-            RestartCommand = new RelayCommand(() => Level.RestartLevel());
-            UndoCommand = new RelayCommand(() =>
-            {
-                Level.Undo();
-                UndoCommand.NotifyCanExecuteChanged();
-            }, () => Level.History.Count > 0);
 
             WeakReferenceMessenger.Default.Register<NotifyUndoAvailabilityMessage>(this, (r, m) =>
             {
@@ -43,10 +28,10 @@ namespace WpfSokoban.ViewModels
         }
 
         /// <summary>
-        /// Handle key press event to control the hero
+        /// Handle the key press event of the window
         /// </summary>
-        /// <param name="e"></param>
-        private void KeyUpHandler(KeyEventArgs e)
+        [RelayCommand]
+        private void WindowKeyUp(KeyEventArgs e)
         {
             if (Level.IsWinning)
             {
@@ -110,23 +95,33 @@ namespace WpfSokoban.ViewModels
         }
 
         /// <summary>
-        /// Handle the key press event of the window
-        /// </summary>
-        public RelayCommand<KeyEventArgs> KeyUpCommand { get; }
-
-        /// <summary>
         /// Load the next level
         /// </summary>
-        public RelayCommand NextLevelCommand { get; }
+        [RelayCommand(CanExecute = nameof(CanNextLevelExecute))]
+        private void NextLevel()
+        {
+            Level.TryLoadNextLevel();
+            NextLevelCommand.NotifyCanExecuteChanged();
+        }
+
+        private bool CanNextLevelExecute() => Level.HasMoreLevels;
 
         /// <summary>
         /// Restart the current level
         /// </summary>
-        public RelayCommand RestartCommand { get; }
+        [RelayCommand]
+        private void Restart() => Level.RestartLevel();
 
         /// <summary>
         /// Undo one step
         /// </summary>
-        public RelayCommand UndoCommand { get; }
+        [RelayCommand(CanExecute = nameof(CanUndoExecute))]
+        private void Undo()
+        {
+            Level.Undo();
+            UndoCommand.NotifyCanExecuteChanged();
+        }
+
+        private bool CanUndoExecute() => Level.History.Count > 0;
     }
 }

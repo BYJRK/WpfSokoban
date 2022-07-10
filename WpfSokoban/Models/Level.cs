@@ -1,6 +1,5 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Messaging;
-using PropertyChanged;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,49 +9,65 @@ using WpfSokoban.Messages;
 
 namespace WpfSokoban.Models
 {
-    public class Level : ObservableObject
+    public partial class Level : ObservableObject
     {
         /// <summary>
         /// The grid size of the canvas to draw the controls
         /// </summary>
         public static int GridSize = 50;
 
+        public static int LevelCount = 5;
+
         /// <summary>
         /// Indicates the index of the current level
         /// </summary>
-        public int CurrentLevel { get; set; } = 1;
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasMoreLevels))]
+        private int currentLevel = 1;
 
         /// <summary>
         /// A temporary flag to indicate whether there are more levels to play
         /// </summary>
-        public bool HasMoreLevels => CurrentLevel < 5;
+        public bool HasMoreLevels => CurrentLevel < LevelCount;
 
         /// <summary>
         /// The map of the current level (including walls, spaces and goals)
         /// </summary>
-        public ObservableCollection<Block> Map { get; } = new();
+        [ObservableProperty]
+        private ObservableCollection<Block> map = new();
 
         /// <summary>
         /// The player controllable object
         /// </summary>
-        public MovableObject Hero { get; private set; }
+        [ObservableProperty]
+        private MovableObject hero;
 
         /// <summary>
         /// All crates in the current level
         /// </summary>
-        public ObservableCollection<MovableObject> Crates { get; } = new();
+        [ObservableProperty]
+        public ObservableCollection<MovableObject> crates = new();
 
         /// <summary>
         /// A stack to record the player actions so as to undo actions later
         /// </summary>
-        public Stack<(MovableObject obj, (int, int) offset)> History { get; private set; } = new();
+        [ObservableProperty]
+        private Stack<(MovableObject obj, (int, int) offset)> history = new();
 
-        public int Width { get; private set; }
-        public int Height { get; private set; }
+        [ObservableProperty]
+        private int width;
 
-        [AlsoNotifyFor(nameof(IsWinning), nameof(History))]
-        [OnChangedMethod(nameof(SendNotifyUndoAvailabilityMessage))]
-        public int StepCount { get; set; } = 0;
+        [ObservableProperty]
+        private int height;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsWinning), nameof(History))]
+        private int stepCount = 0;
+
+        partial void OnStepCountChanged(int value)
+        {
+            SendNotifyUndoAvailabilityMessage();
+        }
 
         public void LoadLevel(string text)
         {

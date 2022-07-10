@@ -3,7 +3,7 @@
     /// <summary>
     /// A block inside the map
     /// </summary>
-    public class Block : IPosition
+    public class Block
     {
         public Block(BlockType type, int x, int y)
         {

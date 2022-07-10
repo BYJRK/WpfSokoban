@@ -26,7 +26,7 @@
     </Window.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="KeyUp">
-            <i:InvokeCommandAction Command="{Binding KeyUpCommand}" PassEventArgsToCommand="True" />
+            <i:InvokeCommandAction Command="{Binding WindowKeyUpCommand}" PassEventArgsToCommand="True" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>
