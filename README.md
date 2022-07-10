@@ -1,11 +1,12 @@
 # WpfSokoban
 
+A Sokoban (推箱子) minigame developed with WPF, following MVVM pattern
+
 ![Demo](demo.png)
 
 ## Dependencies
 
 * FontAwesome.Sharp
-* Microsoft.Toolkit.Mvvm
+* CommunityToolkit.Mvvm
 * Microsoft.Xaml.Behaviors
-* PropertyChanged.Fody
 * WPFConverters
