@@ -17,6 +17,10 @@
     <Window.DataContext>
         <vm:MainWindowViewModel />
     </Window.DataContext>
+    <Window.InputBindings>
+        <KeyBinding Gesture="Ctrl+Z" Command="{Binding UndoCommand}" />
+        <KeyBinding Gesture="Ctrl+R" Command="{Binding RestartCommand}" />
+    </Window.InputBindings>
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -26,7 +30,7 @@
     </Window.Resources>
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="KeyUp">
-            <i:InvokeCommandAction Command="{Binding WindowKeyUpCommand}" PassEventArgsToCommand="True" />
+            <i:InvokeCommandAction Command="{Binding WindowKeyDownCommand}" PassEventArgsToCommand="True" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>

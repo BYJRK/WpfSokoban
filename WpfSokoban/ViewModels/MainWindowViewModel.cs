@@ -31,7 +31,7 @@ namespace WpfSokoban.ViewModels
         /// Handle the key press event of the window
         /// </summary>
         [RelayCommand]
-        private void WindowKeyUp(KeyEventArgs e)
+        private void WindowKeyDown(KeyEventArgs e)
         {
             if (Level.IsWinning)
             {
