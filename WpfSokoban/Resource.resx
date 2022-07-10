@@ -121,7 +121,7 @@
     <value>#####
 #@  #
 # $ #
-## *#
+## .#
  ####</value>
   </data>
   <data name="Level2" xml:space="preserve">
@@ -129,35 +129,44 @@
 #  @  #
 # $   #
 # $ $ #
-##*** #
+##... #
  ######</value>
   </data>
   <data name="Level3" xml:space="preserve">
     <value>#####
 #   #
 # $ # ###
-# $ # #*#
-### ###*#
- ##@   *#
+# $ # #.#
+### ###.#
+ ##@   .#
  # $ #  #
  #   ####
  #####</value>
   </data>
   <data name="Level4" xml:space="preserve">
+    <value>######
+#    #
+#. $ #
+#.#$##
+#    #
+#  @ #
+######</value>
+  </data>
+  <data name="Level5" xml:space="preserve">
     <value>  ####
 ###  ####
 #     $ #
 # #  #$ #
-# * *#@ #
+# . .#@ #
 #########</value>
   </data>
-  <data name="Level5" xml:space="preserve">
+  <data name="Level6" xml:space="preserve">
     <value>#######
-#* * *#
+#. . .#
 # $$$ #
-#*$@$*#
+#.$@$.#
 # $$$ #
-#* * *#
+#. . .#
 #######</value>
   </data>
 </root>

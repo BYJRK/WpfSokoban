@@ -2,8 +2,9 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!--Color palatte: https://coolors.co/4b5a81-f97068-dade68-edf2ef-1e9cc2-->
-    
+
     <Color x:Key="LightColor">#EDF2EF</Color>
+    <Color x:Key="NeutralColor">#D0DDD5</Color>
     <Color x:Key="MiddleColor">#4B5A81</Color>
     <Color x:Key="DarkColor">#212738</Color>
     <Color x:Key="YellowColor">#DADE68</Color>
@@ -11,6 +12,7 @@
     <Color x:Key="BlueColor">#1E9CC2</Color>
 
     <SolidColorBrush x:Key="LightBrush" Color="{StaticResource LightColor}" />
+    <SolidColorBrush x:Key="NeutralBrush" Color="{StaticResource NeutralColor}" />
     <SolidColorBrush x:Key="MiddleBrush" Color="{StaticResource MiddleColor}" />
     <SolidColorBrush x:Key="DarkBrush" Color="{StaticResource DarkColor}" />
     <SolidColorBrush x:Key="YellowBrush" Color="{StaticResource YellowColor}" />

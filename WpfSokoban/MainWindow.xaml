@@ -10,8 +10,9 @@
         xmlns:local="clr-namespace:WpfSokoban"
         xmlns:model="clr-namespace:WpfSokoban.Models"
         Title="Sokoban"
-        Width="600"
-        Height="450"
+        Width="720"
+        Height="480"
+        WindowStartupLocation="CenterScreen"
         Background="{DynamicResource LightBrush}"
         mc:Ignorable="d">
     <Window.DataContext>
@@ -70,7 +71,7 @@
                                                 <Setter Property="Width" Value="50" />
                                                 <Setter Property="Height" Value="50" />
                                             </DataTrigger>
-                                            <DataTrigger Binding="{Binding Type}" Value="{x:Static model:BlockType.Star}">
+                                            <DataTrigger Binding="{Binding Type}" Value="{x:Static model:BlockType.Goal}">
                                                 <Setter Property="Icon" Value="DotCircle" />
                                                 <Setter Property="Foreground" Value="{StaticResource RedBrush}" />
                                                 <Setter Property="Width" Value="40" />
@@ -104,7 +105,7 @@
                                     <Style TargetType="fa:IconImage">
                                         <Setter Property="Foreground" Value="{StaticResource DarkBrush}" />
                                         <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsOnStar}" Value="True">
+                                            <DataTrigger Binding="{Binding IsOnGoal}" Value="True">
                                                 <Setter Property="Foreground" Value="{StaticResource BlueBrush}" />
                                             </DataTrigger>
                                         </Style.Triggers>
@@ -139,8 +140,8 @@
         </Viewbox>
 
         <!-- Right side info panel -->
-        <Grid Grid.Column="1" Width="160">
-            <StackPanel Margin="0,10" Cursor="Hand">
+        <Grid Grid.Column="1" Width="160" Background="{StaticResource NeutralBrush}">
+            <StackPanel Margin="10" Cursor="Hand">
                 <TextBlock Text="LEVEL" FontSize="20" Foreground="Gray" />
                 <TextBlock FontSize="30" Text="{Binding Level.CurrentLevel}" />
                 <TextBlock Text="STEPS" FontSize="20" Foreground="Gray" />

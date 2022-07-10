@@ -31,7 +31,7 @@ namespace WpfSokoban.Models
         public int ActualY => Y * Level.GridSize;
 
         [ObservableProperty]
-        private bool isOnStar = false;
+        private bool isOnGoal = false;
 
         private void Move(int x, int y)
         {
@@ -55,21 +55,21 @@ namespace WpfSokoban.Models
             Move(-offset.x, -offset.y);
         }
 
-        public void CheckOnStar(Level level)
+        public void CheckOnGoal(Level level)
         {
             // No need for hero to check if it's on the star
             if (Type == MovableObjectType.Hero)
                 return;
 
-            foreach (var block in level.Map.Where(b => b.Type == BlockType.Star))
+            foreach (var block in level.Map.Where(b => b.Type == BlockType.Goal))
             {
                 if (block.X == X && block.Y == Y)
                 {
-                    IsOnStar = true;
+                    IsOnGoal = true;
                     return;
                 }
             }
-            IsOnStar = false;
+            IsOnGoal = false;
         }
     }
 }

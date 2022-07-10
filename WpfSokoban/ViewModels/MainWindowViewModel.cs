@@ -81,7 +81,7 @@ namespace WpfSokoban.ViewModels
 
                 // move the crate
                 hitCrate.Move(offset);
-                hitCrate.CheckOnStar(Level);
+                hitCrate.CheckOnGoal(Level);
 
                 Level.History.Push((hitCrate, offset));
             }

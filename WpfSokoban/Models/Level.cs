@@ -17,7 +17,7 @@ namespace WpfSokoban.Models
         /// </summary>
         public static int GridSize = 50;
 
-        public static int LevelCount = 5;
+        public static int LevelCount;
 
         /// <summary>
         /// Indicates the index of the current level
@@ -64,6 +64,11 @@ namespace WpfSokoban.Models
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsWinning), nameof(History))]
         private int stepCount = 0;
+
+        public Level()
+        {
+            GetLevelCount();
+        }
 
         partial void OnStepCountChanged(int value)
         {
@@ -118,6 +123,22 @@ namespace WpfSokoban.Models
             History.Clear();
         }
 
+        private void GetLevelCount()
+        {
+            int level = 1;
+
+            while (true)
+            {
+                var prop = typeof(Resource).GetProperty($"Level{level}", BindingFlags.Static | BindingFlags.NonPublic);
+                if (prop != null)
+                    level++;
+                else
+                    break;
+            }
+
+            LevelCount = level - 1;
+        }
+
         private void SendNotifyUndoAvailabilityMessage()
         {
             WeakReferenceMessenger.Default.Send(new NotifyUndoAvailabilityMessage(null));
@@ -161,23 +182,37 @@ namespace WpfSokoban.Models
 
                     /**
                      * #: Wall
-                     * _: Space
-                     * *: Star
                      * @: Hero
+                     * _: Space
+                     * .: Goal
                      * $: Crate
+                     * *: Box on Goal
+                     * +: Hero on Goal
                      */
 
                     if (ch == '#')
                         Map.Add(new Block(BlockType.Wall, x, y));
-                    else if (ch == '*')
-                        Map.Add(new Block(BlockType.Star, x, y));
-                    else
+                    else if (ch == '.')
+                        Map.Add(new Block(BlockType.Goal, x, y));
+                    else if (ch == '@')
                     {
                         Map.Add(new Block(BlockType.Space, x, y));
-                        if (ch == '@')
-                            Hero = new MovableObject(MovableObjectType.Hero, x, y);
-                        else if (ch == '$')
-                            Crates.Add(new MovableObject(MovableObjectType.Crate, x, y));
+                        Hero = new MovableObject(MovableObjectType.Hero, x, y);
+                    }
+                    else if (ch == '$')
+                    {
+                        Map.Add(new Block(BlockType.Space, x, y));
+                        Crates.Add(new MovableObject(MovableObjectType.Crate, x, y));
+                    }
+                    else if (ch == '*')
+                    {
+                        Map.Add(new Block(BlockType.Goal, x, y));
+                        Crates.Add(new MovableObject(MovableObjectType.Crate, x, y));
+                    }
+                    else if (ch == '+')
+                    {
+                        Map.Add(new Block(BlockType.Goal, x, y));
+                        Hero = new MovableObject(MovableObjectType.Hero, x, y);
                     }
                 }
             }
@@ -201,7 +236,7 @@ namespace WpfSokoban.Models
             {
                 foreach (var crate in Crates)
                 {
-                    if (!crate.IsOnStar)
+                    if (!crate.IsOnGoal)
                         return false;
                 }
                 return true;
@@ -236,7 +271,7 @@ namespace WpfSokoban.Models
             {
                 History.Pop();
                 move.obj.Reverse(move.offset);
-                move.obj.CheckOnStar(this);
+                move.obj.CheckOnGoal(this);
             }
 
             OnPropertyChanged(nameof(History));

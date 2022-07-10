@@ -4,6 +4,6 @@
     {
         Space,
         Wall,
-        Star
+        Goal
     }
 }
