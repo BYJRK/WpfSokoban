@@ -110,7 +110,7 @@ namespace WpfSokoban.ViewModels
         /// Restart the current level
         /// </summary>
         [RelayCommand]
-        private void Restart() => Level.RestartLevel();
+        private void Restart() => Level.LoadLevel();
 
         /// <summary>
         /// Undo one step

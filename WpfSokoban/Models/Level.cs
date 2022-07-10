@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using WpfSokoban.Messages;
 
 namespace WpfSokoban.Models
@@ -130,29 +131,12 @@ namespace WpfSokoban.Models
         /// <exception cref="IndexOutOfRangeException"></exception>
         public string GetLevel(int level)
         {
-            switch (level)
+            if (level >= 1 && level <= LevelCount)
             {
-                case 1:
-                    return Resource.Level1;
-                case 2:
-                    return Resource.Level2;
-                case 3:
-                    return Resource.Level3;
-                case 4:
-                    return Resource.Level4;
-                case 5:
-                    return Resource.Level5;
-                default:
-                    throw new IndexOutOfRangeException();
+                var prop = typeof(Resource).GetProperty($"Level{level}", BindingFlags.Static | BindingFlags.NonPublic);
+                return prop.GetValue(null) as string;
             }
-        }
-
-        /// <summary>
-        /// Restart the current level by reloading the map
-        /// </summary>
-        public void RestartLevel()
-        {
-            LoadLevel();
+            throw new IndexOutOfRangeException();
         }
 
         private (int width, int height) ParseLevelString(string text)
