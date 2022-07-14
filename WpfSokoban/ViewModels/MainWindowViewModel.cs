@@ -44,17 +44,25 @@ namespace WpfSokoban.ViewModels
             var x = Level.Hero.X;
             var y = Level.Hero.Y;
 
-            (int x, int y) offset = (0, 0);
+            (int x, int y) offset;
 
-            if (e.Key == Key.Up)
-                offset = (0, -1);
-            else if (e.Key == Key.Down)
-                offset = (0, 1);
-            else if (e.Key == Key.Left)
-                offset = (-1, 0);
-            else if (e.Key == Key.Right)
-                offset = (1, 0);
-            else return;
+            switch (e.Key)
+            {
+                case Key.Up:
+                    offset = (0, -1);
+                    break;
+                case Key.Down:
+                    offset = (0, 1);
+                    break;
+                case Key.Left:
+                    offset = (-1, 0);
+                    break;
+                case Key.Right:
+                    offset = (1, 0);
+                    break;
+                default:
+                    return;
+            }
 
             x += offset.x;
             y += offset.y;

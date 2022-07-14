@@ -47,7 +47,7 @@ namespace WpfSokoban.Models
         /// All crates in the current level
         /// </summary>
         [ObservableProperty]
-        public ObservableCollection<MovableObject> crates = new();
+        private ObservableCollection<MovableObject> crates = new();
 
         /// <summary>
         /// A stack to record the player actions so as to undo actions later
@@ -152,12 +152,10 @@ namespace WpfSokoban.Models
         /// <exception cref="IndexOutOfRangeException"></exception>
         public string GetLevel(int level)
         {
-            if (level >= 1 && level <= LevelCount)
-            {
-                var prop = typeof(Resource).GetProperty($"Level{level}", BindingFlags.Static | BindingFlags.NonPublic);
-                return prop.GetValue(null) as string;
-            }
-            throw new IndexOutOfRangeException();
+            if (level < 1 || level > LevelCount) throw new IndexOutOfRangeException();
+
+            var prop = typeof(Resource).GetProperty($"Level{level}", BindingFlags.Static | BindingFlags.NonPublic);
+            return prop!.GetValue(null) as string;
         }
 
         private (int width, int height) ParseLevelString(string text)
@@ -190,29 +188,30 @@ namespace WpfSokoban.Models
                      * +: Hero on Goal
                      */
 
-                    if (ch == '#')
-                        Map.Add(new Block(BlockType.Wall, x, y));
-                    else if (ch == '.')
-                        Map.Add(new Block(BlockType.Goal, x, y));
-                    else if (ch == '@')
+                    switch (ch)
                     {
-                        Map.Add(new Block(BlockType.Space, x, y));
-                        Hero = new MovableObject(MovableObjectType.Hero, x, y);
-                    }
-                    else if (ch == '$')
-                    {
-                        Map.Add(new Block(BlockType.Space, x, y));
-                        Crates.Add(new MovableObject(MovableObjectType.Crate, x, y));
-                    }
-                    else if (ch == '*')
-                    {
-                        Map.Add(new Block(BlockType.Goal, x, y));
-                        Crates.Add(new MovableObject(MovableObjectType.Crate, x, y));
-                    }
-                    else if (ch == '+')
-                    {
-                        Map.Add(new Block(BlockType.Goal, x, y));
-                        Hero = new MovableObject(MovableObjectType.Hero, x, y);
+                        case '#':
+                            Map.Add(new Block(BlockType.Wall, x, y));
+                            break;
+                        case '.':
+                            Map.Add(new Block(BlockType.Goal, x, y));
+                            break;
+                        case '@':
+                            Map.Add(new Block(BlockType.Space, x, y));
+                            Hero = new MovableObject(MovableObjectType.Hero, x, y);
+                            break;
+                        case '$':
+                            Map.Add(new Block(BlockType.Space, x, y));
+                            Crates.Add(new MovableObject(MovableObjectType.Crate, x, y));
+                            break;
+                        case '*':
+                            Map.Add(new Block(BlockType.Goal, x, y));
+                            Crates.Add(new MovableObject(MovableObjectType.Crate, x, y));
+                            break;
+                        case '+':
+                            Map.Add(new Block(BlockType.Goal, x, y));
+                            Hero = new MovableObject(MovableObjectType.Hero, x, y);
+                            break;
                     }
                 }
             }
@@ -222,35 +221,20 @@ namespace WpfSokoban.Models
 
         public bool HasWallAt(int x, int y)
         {
-            foreach (var block in Map.Where(b => b.Type == BlockType.Wall))
-            {
-                if (block.X == x && block.Y == y)
-                    return true;
-            }
-            return false;
+            return Map.Where(b => b.Type == BlockType.Wall).Any(block => block.X == x && block.Y == y);
         }
 
         public bool IsWinning
         {
             get
             {
-                foreach (var crate in Crates)
-                {
-                    if (!crate.IsOnGoal)
-                        return false;
-                }
-                return true;
+                return Crates.All(crate => crate.IsOnGoal);
             }
         }
 
         public MovableObject HasCrateAt(int x, int y)
         {
-            foreach (var crate in Crates)
-            {
-                if (crate.X == x && crate.Y == y)
-                    return crate;
-            }
-            return null;
+            return Crates.FirstOrDefault(crate => crate.X == x && crate.Y == y);
         }
 
 
@@ -262,7 +246,7 @@ namespace WpfSokoban.Models
             Debug.Assert(History.Count > 0);
 
             // the last step must be hero's
-            (var hero, var offset) = History.Pop();
+            var (hero, offset) = History.Pop();
             StepCount -= 1;
             hero.Reverse(offset);
 

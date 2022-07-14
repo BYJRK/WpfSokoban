@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!--Color palatte: https://coolors.co/4b5a81-f97068-dade68-edf2ef-1e9cc2-->
+    <!--Color palette: https://coolors.co/4b5a81-f97068-dade68-edf2ef-1e9cc2-->
 
     <Color x:Key="LightColor">#EDF2EF</Color>
     <Color x:Key="NeutralColor">#D0DDD5</Color>

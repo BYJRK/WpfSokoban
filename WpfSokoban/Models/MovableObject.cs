@@ -24,7 +24,7 @@ namespace WpfSokoban.Models
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(ActualY))]
-        public int y;
+        private int y;
 
         public int ActualX => X * Level.GridSize;
 
@@ -61,13 +61,10 @@ namespace WpfSokoban.Models
             if (Type == MovableObjectType.Hero)
                 return;
 
-            foreach (var block in level.Map.Where(b => b.Type == BlockType.Goal))
+            if (level.Map.Where(b => b.Type == BlockType.Goal).Any(block => block.X == X && block.Y == Y))
             {
-                if (block.X == X && block.Y == Y)
-                {
-                    IsOnGoal = true;
-                    return;
-                }
+                IsOnGoal = true;
+                return;
             }
             IsOnGoal = false;
         }
