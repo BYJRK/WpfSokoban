@@ -3,11 +3,11 @@
     public enum MovableObjectType
     {
         /// <summary>
-        /// 主角
+        /// Hero
         /// </summary>
         Hero,
         /// <summary>
-        /// 箱子
+        /// Crate
         /// </summary>
         Crate
     }

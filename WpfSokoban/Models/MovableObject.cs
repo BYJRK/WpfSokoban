@@ -15,21 +15,39 @@ namespace WpfSokoban.Models
             Y = y;
         }
 
+        /// <summary>
+        /// The type of this movable object (hero or crate)
+        /// </summary>
         [ObservableProperty]
         private MovableObjectType type;
 
+        /// <summary>
+        /// The x coordinate of this object
+        /// </summary>
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(ActualX))]
         private int x;
 
+        /// <summary>
+        /// The y coordinate of this object
+        /// </summary>
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(ActualY))]
         private int y;
 
+        /// <summary>
+        /// The actual Canvas.Left to draw the object on the canvas
+        /// </summary>
         public int ActualX => X * Level.GridSize;
 
+        /// <summary>
+        /// The actual Canvas.Top to draw the object on the canvas
+        /// </summary>
         public int ActualY => Y * Level.GridSize;
 
+        /// <summary>
+        /// Whether this crate is on the goal
+        /// </summary>
         [ObservableProperty]
         private bool isOnGoal = false;
 
@@ -55,6 +73,10 @@ namespace WpfSokoban.Models
             Move(-offset.x, -offset.y);
         }
 
+        /// <summary>
+        /// Check if this crate is on goal 
+        /// </summary>
+        /// <param name="level"></param>
         public void CheckOnGoal(Level level)
         {
             // No need for hero to check if it's on the star

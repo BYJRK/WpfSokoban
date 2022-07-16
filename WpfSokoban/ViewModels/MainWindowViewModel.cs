@@ -46,6 +46,7 @@ namespace WpfSokoban.ViewModels
 
             (int x, int y) offset;
 
+            // determine the offset according to arrow keys
             switch (e.Key)
             {
                 case Key.Up:

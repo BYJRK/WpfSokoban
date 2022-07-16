@@ -251,6 +251,7 @@ namespace WpfSokoban.Models
             hero.Reverse(offset);
 
             // check if the previous step is a movement of a crate
+            // if it is, also revert the crate's last movement
             if (History.TryPeek(out var move) && move.obj.Type == MovableObjectType.Crate)
             {
                 History.Pop();
