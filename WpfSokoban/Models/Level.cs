@@ -19,6 +19,8 @@ namespace WpfSokoban.Models
 
         public static int LevelCount;
 
+        #region Observable Properties
+
         /// <summary>
         /// Indicates the index of the current level
         /// </summary>
@@ -65,6 +67,8 @@ namespace WpfSokoban.Models
         [NotifyPropertyChangedFor(nameof(IsWinning), nameof(History))]
         private int stepCount = 0;
 
+        #endregion
+
         public Level()
         {
             GetLevelCount();
@@ -78,8 +82,6 @@ namespace WpfSokoban.Models
         public void LoadLevel(string text)
         {
             Init();
-
-            StepCount = 0;
             (Width, Height) = ParseLevelString(text);
 
             Width = GridSize * (Width + 1);
@@ -116,13 +118,21 @@ namespace WpfSokoban.Models
             }
         }
 
+        /// <summary>
+        /// Initialize objects on the level and reset <see cref="StepCount"/> to 0
+        /// </summary>
         private void Init()
         {
             Map.Clear();
             Crates.Clear();
             History.Clear();
+
+            StepCount = 0;
         }
 
+        /// <summary>
+        /// Get level count by simply look through the resource
+        /// </summary>
         private void GetLevelCount()
         {
             int level = 1;
